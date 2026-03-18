@@ -1,0 +1,95 @@
+import java.util.Scanner;
+
+public class PrimeAnalyzer {
+
+    // Check if number is prime
+    static boolean isPrime(int num) {
+        if (num <= 1) return false;
+
+        for (int i = 2; i <= num / 2; i++) {
+            if (num % i == 0)
+                return false;
+        }
+        return true;
+    }
+
+    // Generate primes up to n
+    static void generatePrimes(int n) {
+        System.out.print("Prime numbers: ");
+        for (int i = 2; i <= n; i++) {
+            if (isPrime(i)) {
+                System.out.print(i + " ");
+            }
+        }
+        System.out.println();
+    }
+
+    // Count primes
+    static void countPrimes(int n) {
+        int count = 0;
+        for (int i = 2; i <= n; i++) {
+            if (isPrime(i)) count++;
+        }
+        System.out.println("Total primes = " + count);
+    }
+
+    // Largest prime
+    static void largestPrime(int n) {
+        int largest = -1;
+        for (int i = 2; i <= n; i++) {
+            if (isPrime(i)) {
+                largest = i;
+            }
+        }
+        if (largest == -1)
+            System.out.println("No prime found");
+        else
+            System.out.println("Largest prime = " + largest);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\n--- Prime Number Analyzer ---");
+            System.out.println("1. Generate Prime Numbers");
+            System.out.println("2. Count Primes");
+            System.out.println("3. Find Largest Prime");
+            System.out.println("4. Check Prime");
+            System.out.println("5. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice = sc.nextInt();
+
+            if (choice == 5) {
+                System.out.println("Exiting...");
+                break;
+            }
+
+            System.out.print("Enter number: ");
+            int n = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    generatePrimes(n);
+                    break;
+                case 2:
+                    countPrimes(n);
+                    break;
+                case 3:
+                    largestPrime(n);
+                    break;
+                case 4:
+                    if (isPrime(n))
+                        System.out.println(n + " is Prime");
+                    else
+                        System.out.println(n + " is Not Prime");
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+
+        sc.close();
+    }
+}
