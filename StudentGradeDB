@@ -1,0 +1,99 @@
+CREATE DATABASE studentdb;
+
+USE studentdb;
+
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    marks1 INT,
+    marks2 INT,
+    marks3 INT,
+    total INT,
+    average DOUBLE,
+    grade VARCHAR(5)
+);
+
+
+package JDBC;
+	import java.sql.*;
+	import java.util.Scanner;
+
+	public class StudentGradeDB {
+
+	    public static String calculateGrade(double avg) {
+	        if (avg >= 90) return "A+";
+	        else if (avg >= 75) return "A";
+	        else if (avg >= 60) return "B";
+	        else if (avg >= 50) return "C";
+	        else return "F";
+	    }
+
+	    public static void main(String[] args) {
+	        Scanner sc = new Scanner(System.in);
+
+	        String url = "jdbc:mysql://localhost:3306/studentdb";
+	        String user = "root";      
+	        String password = "root12345";  
+
+	        try {
+	           
+	            Class.forName("com.mysql.cj.jdbc.Driver");
+
+	            Connection con = DriverManager.getConnection(url, user, password);
+
+	            System.out.print("Enter Student Name: ");
+	            String name = sc.nextLine();
+
+	            System.out.print("Enter Marks 1: ");
+	            int m1 = sc.nextInt();
+
+	            System.out.print("Enter Marks 2: ");
+	            int m2 = sc.nextInt();
+
+	            System.out.print("Enter Marks 3: ");
+	            int m3 = sc.nextInt();
+
+	            int total = m1 + m2 + m3;
+	            double avg = total / 3.0;
+	            String grade = calculateGrade(avg);
+
+	            String query = "INSERT INTO students(name, marks1, marks2, marks3, total, average, grade) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+	            PreparedStatement ps = con.prepareStatement(query);
+	            ps.setString(1, name);
+	            ps.setInt(2, m1);
+	            ps.setInt(3, m2);
+	            ps.setInt(4, m3);
+	            ps.setInt(5, total);
+	            ps.setDouble(6, avg);
+	            ps.setString(7, grade);
+
+	            ps.executeUpdate();
+
+	            System.out.println("\n✅ Data Saved Successfully!");
+	            System.out.println("Total: " + total);
+	            System.out.println("Average: " + avg);
+	            System.out.println("Grade: " + grade);
+
+	            Statement st = con.createStatement();
+	            ResultSet rs = st.executeQuery("SELECT * FROM students");
+
+	            System.out.println("\n--- Student Records ---");
+	            while (rs.next()) {
+	                System.out.println(
+	                    rs.getInt("id") + " | " +
+	                    rs.getString("name") + " | " +
+	                    rs.getDouble("average") + " | " +
+	                    rs.getString("grade")
+	                );
+	            }
+
+	            con.close();
+
+	        } catch (Exception e) {
+	            System.out.println(e);
+	        }
+
+	        sc.close();
+	    }
+	}
